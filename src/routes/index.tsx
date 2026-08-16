@@ -119,9 +119,8 @@ function Index() {
 
   return (
     <main className="min-h-screen">
-      <header className="border-b border-border" style={{ background: "var(--gradient-hero)" }}>
+      <header className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-6 py-14">
-          <Badge className="border-primary/40 bg-primary/10 text-primary">Lead operations</Badge>
           <h1 className="mt-4 max-w-3xl font-display text-4xl font-bold sm:text-5xl">
             Turn a messy lead export into a ranked call list
           </h1>
@@ -167,10 +166,26 @@ function Index() {
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-              <StatCard label="Leads processed" value={result.stats.total} hint={`${result.stats.duplicates} duplicates merged`} />
-              <StatCard label="Contact now" value={result.stats.contact} hint={`score ≥ ${thresholds.contact}`} />
-              <StatCard label="Nurture" value={result.stats.nurture} hint={`score ${thresholds.nurture}–${thresholds.contact - 1}`} />
-              <StatCard label="Disqualified" value={result.stats.disqualify} hint="spam, non-buyers, out of ICP" />
+              <StatCard
+                label="Leads processed"
+                value={result.stats.total}
+                hint={`${result.stats.duplicates} duplicates merged`}
+              />
+              <StatCard
+                label="Contact now"
+                value={result.stats.contact}
+                hint={`score ≥ ${thresholds.contact}`}
+              />
+              <StatCard
+                label="Nurture"
+                value={result.stats.nurture}
+                hint={`score ${thresholds.nurture}–${thresholds.contact - 1}`}
+              />
+              <StatCard
+                label="Disqualified"
+                value={result.stats.disqualify}
+                hint="spam, non-buyers, out of ICP"
+              />
               <StatCard label="Average score" value={result.stats.avgScore} hint="out of 100" />
             </div>
 
@@ -206,7 +221,9 @@ function Index() {
                     key={f}
                     onClick={() => setFilter(f)}
                     className={`rounded-md px-3 py-1.5 text-sm capitalize transition-colors ${
-                      filter === f ? "bg-secondary font-semibold" : "text-muted-foreground hover:bg-secondary/60"
+                      filter === f
+                        ? "bg-secondary font-semibold"
+                        : "text-muted-foreground hover:bg-secondary/60"
                     }`}
                   >
                     {f === "all" ? "All" : actionMeta[f].label}
@@ -265,7 +282,9 @@ function Index() {
                         <ScoreBar lead={lead} />
                       </td>
                       <td className="px-4 py-3">
-                        <Badge className={actionMeta[lead.action].cls}>{actionMeta[lead.action].label}</Badge>
+                        <Badge className={actionMeta[lead.action].cls}>
+                          {actionMeta[lead.action].label}
+                        </Badge>
                       </td>
                     </tr>
                   ))}
@@ -328,10 +347,22 @@ function Slider({
 
 function HowItWorks() {
   const steps = [
-    { t: "1. Clean", d: "Normalises IDs, mixed date formats, headcount ranges, websites and messy budget strings like \"$6-8k\" or \"TBD\". Invalid emails and duplicates get flagged." },
-    { t: "2. Read the notes", d: "Pattern rules detect buying urgency, approved budget, named pain, authority — and the negatives: price sensitivity, soft timelines, spam, job seekers, students, press and investors." },
-    { t: "3. Score", d: "Intent (40) + fit (35) + budget (25) = a 0–100 score, with hard disqualifiers overriding everything." },
-    { t: "4. Prioritise", d: "Leads are ranked and split into contact now, nurture, or disqualify. Tune thresholds live and export the ranked list as CSV." },
+    {
+      t: "1. Clean",
+      d: 'Normalises IDs, mixed date formats, headcount ranges, websites and messy budget strings like "$6-8k" or "TBD". Invalid emails and duplicates get flagged.',
+    },
+    {
+      t: "2. Read the notes",
+      d: "Pattern rules detect buying urgency, approved budget, named pain, authority — and the negatives: price sensitivity, soft timelines, spam, job seekers, students, press and investors.",
+    },
+    {
+      t: "3. Score",
+      d: "Intent (40) + fit (35) + budget (25) = a 0–100 score, with hard disqualifiers overriding everything.",
+    },
+    {
+      t: "4. Prioritise",
+      d: "Leads are ranked and split into contact now, nurture, or disqualify. Tune thresholds live and export the ranked list as CSV.",
+    },
   ];
   return (
     <div className="grid gap-4 md:grid-cols-2">

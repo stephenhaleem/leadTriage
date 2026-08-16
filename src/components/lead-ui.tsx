@@ -1,20 +1,44 @@
 import type { Action, ScoredLead } from "@/lib/lead-engine";
 
 export const actionMeta: Record<Action, { label: string; cls: string }> = {
-  contact: { label: "Contact now", cls: "bg-primary/15 text-primary border-primary/40" },
-  nurture: { label: "Nurture", cls: "bg-accent/15 text-accent border-accent/40" },
-  disqualify: { label: "Disqualify", cls: "bg-destructive/15 text-destructive border-destructive/40" },
+  contact: {
+    label: "Contact now",
+    cls: "bg-emerald-600/15 text-emerald-700 dark:text-emerald-400 border-emerald-600/40",
+  },
+  nurture: {
+    label: "Nurture",
+    cls: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/40",
+  },
+  disqualify: {
+    label: "Disqualify",
+    cls: "bg-red-600/15 text-red-700 dark:text-red-400 border-red-600/40",
+  },
 };
-
-export function Badge({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+export function Badge({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${className}`}>
+    <span
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${className}`}
+    >
       {children}
     </span>
   );
 }
 
-export function StatCard({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
+export function StatCard({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: string | number;
+  hint?: string;
+}) {
   return (
     <div className="panel p-5">
       <p className="text-xs uppercase tracking-widest text-muted-foreground">{label}</p>
@@ -41,7 +65,10 @@ export function ScoreBar({ lead }: { lead: ScoredLead }) {
 
 export function LeadDetail({ lead, onClose }: { lead: ScoredLead; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-background/70 backdrop-blur-sm" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex justify-end bg-background/70 backdrop-blur-sm"
+      onClick={onClose}
+    >
       <aside
         className="h-full w-full max-w-md overflow-y-auto border-l border-border bg-card p-6"
         onClick={(e) => e.stopPropagation()}
@@ -75,7 +102,10 @@ export function LeadDetail({ lead, onClose }: { lead: ScoredLead; onClose: () =>
           <Field label="Employees" value={lead.employees?.toString() ?? "unknown"} />
           <Field label="Budget" value={lead.budgetLabel} />
           <Field label="Seniority" value={lead.seniority} />
-          <Field label="Intent / Fit / Budget" value={`${lead.intent} / ${lead.fit} / ${lead.budgetScore}`} />
+          <Field
+            label="Intent / Fit / Budget"
+            value={`${lead.intent} / ${lead.fit} / ${lead.budgetScore}`}
+          />
         </dl>
 
         {lead.flags.length > 0 && (
@@ -83,7 +113,9 @@ export function LeadDetail({ lead, onClose }: { lead: ScoredLead; onClose: () =>
             <h3 className="text-sm font-semibold">Flags</h3>
             <div className="mt-2 flex flex-wrap gap-2">
               {lead.flags.map((f) => (
-                <Badge key={f} className="border-destructive/40 bg-destructive/10 text-destructive">{f}</Badge>
+                <Badge key={f} className="border-destructive/40 bg-destructive/10 text-destructive">
+                  {f}
+                </Badge>
               ))}
             </div>
           </div>
