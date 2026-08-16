@@ -55,16 +55,23 @@ const HEADER_ALIASES: Record<string, string[]> = {
   notes: ["notes", "note", "comments", "message"],
 };
 
-export function mapRow(row: RawRow): Record<string, string> {
+export interface MappedRow {
+  leadId: string; created: string; name: string; email: string; company: string;
+  employees: string; website: string; title: string; source: string; budget: string; notes: string;
+}
+
+export function mapRow(row: RawRow): MappedRow {
   const lower: Record<string, string> = {};
   for (const [k, v] of Object.entries(row)) {
     lower[k.toLowerCase().replace(/[\s-]+/g, "_")] = clean(v);
   }
-  const out: Record<string, string> = {};
-  for (const [field, aliases] of Object.entries(HEADER_ALIASES)) {
-    out[field] = aliases.map((a) => lower[a]).find((v) => v) ?? "";
-  }
-  return out;
+  const pick = (field: string) =>
+    (HEADER_ALIASES[field] ?? []).map((a) => lower[a]).find((v) => v) ?? "";
+  return {
+    leadId: pick("leadId"), created: pick("created"), name: pick("name"), email: pick("email"),
+    company: pick("company"), employees: pick("employees"), website: pick("website"),
+    title: pick("title"), source: pick("source"), budget: pick("budget"), notes: pick("notes"),
+  };
 }
 
 const MONTHS = [
@@ -76,15 +83,15 @@ export function parseDate(raw: string): string | null {
   const s = clean(raw);
   if (!s) return null;
   const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+  if (iso) return `${iso[1]!}-${iso[2]!}-${iso[3]!}`;
   const named = s.match(/^([A-Za-z]{3,})\s+(\d{1,2}),?\s+(\d{4})$/);
   if (named) {
-    const m = MONTHS.indexOf(named[1].slice(0, 3).toLowerCase());
-    if (m >= 0) return `${named[3]}-${pad(m + 1)}-${pad(+named[2])}`;
+    const m = MONTHS.indexOf(named[1]!.slice(0, 3).toLowerCase());
+    if (m >= 0) return `${named[3]!}-${pad(m + 1)}-${pad(+named[2]!)}`;
   }
   const parts = s.match(/^(\d{1,4})[/\-.](\d{1,2})[/\-.](\d{2,4})$/);
   if (parts) {
-    let [, a, b, c] = parts;
+    const a = parts[1]!, b = parts[2]!, c = parts[3]!;
     let year: number, month: number, day: number;
     if (a.length === 4) {
       year = +a; month = +b; day = +c;
@@ -106,9 +113,9 @@ export function parseEmployees(raw: string): number | null {
   const s = clean(raw).toLowerCase();
   if (!s) return null;
   const range = s.match(/(\d+)\s*[-–]\s*(\d+)/);
-  if (range) return Math.round((+range[1] + +range[2]) / 2);
+  if (range) return Math.round((+range[1]! + +range[2]!) / 2);
   const n = s.match(/(\d+)/);
-  return n ? +n[1] : null;
+  return n ? +n[1]! : null;
 }
 
 /** Returns monthly budget in currency units, or null when unknown. */
@@ -117,7 +124,7 @@ export function parseBudget(raw: string): number | null {
   if (!s || /tbd|depends|unknown|n\/a|not sure|\?/.test(s)) return null;
   const nums = [...s.matchAll(/(\d[\d,.]*)\s*(k)?/g)]
     .map((m) => {
-      const base = parseFloat(m[1].replace(/,/g, ""));
+      const base = parseFloat(m[1]!.replace(/,/g, ""));
       if (Number.isNaN(base)) return null;
       return m[2] === "k" ? base * 1000 : base;
     })
@@ -189,7 +196,7 @@ export interface Thresholds {
 }
 export const DEFAULT_THRESHOLDS: Thresholds = { contact: 70, nurture: 45, minBudget: 3000 };
 
-function scoreLead(m: Record<string, string>, t: Thresholds): ScoredLead {
+function scoreLead(m: MappedRow, t: Thresholds): ScoredLead {
   const email = clean(m.email).toLowerCase();
   const emailValid = EMAIL_RE.test(email);
   const domain = normalizeDomain(m.website, email);
