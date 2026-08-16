@@ -152,7 +152,7 @@ const INFLUENCER = ["head of", "vp", "director", "lead", "manager"];
 const JUNIOR = ["student", "intern", "freelancer", "analyst", "assistant"];
 
 export function titleCase(s: string) {
-  return s.replace(/\w\S*/g, (t) => t[0].toUpperCase() + t.slice(1).toLowerCase());
+  return s.replace(/\w\S*/g, (t) => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
 }
 
 /* ------------------------------- signals -------------------------------- */
@@ -280,7 +280,7 @@ function scoreLead(m: MappedRow, t: Thresholds): ScoredLead {
     email,
     emailValid,
     personalEmail,
-    company: clean(m.company) || (domain ? domain.split(".")[0] : "—"),
+    company: clean(m.company) || (domain ? (domain.split(".")[0] ?? "—") : "—"),
     domain,
     employees,
     website: clean(m.website),
